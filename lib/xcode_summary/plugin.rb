@@ -248,12 +248,10 @@ module Danger
 
       path_link = format_path(path)
 
-      warning = "**#{path_link}**: #{escape_reason(h[:reason])}  <br />"
+      warning = "**#{path_link}**: #{escape_reason(h[:reason])}"
       if h[:line] && !h[:line].empty?
-        "#{warning}" \
-          "```\n" \
-          "#{h[:line]}\n" \
-          '```'
+        "#{warning}\n" \
+        "||`#{h[:line]}`" \
       else
         warning
       end
@@ -266,20 +264,20 @@ module Danger
     end
 
     def format_undefined_symbols(h)
-      "#{h[:message]}  <br />" \
-        "> Symbol: #{h[:symbol]}  <br />" \
-        "> Referenced from: #{h[:reference]}"
+      "#{h[:message]}\n" \
+        "|| > Symbol: #{h[:symbol]}\n" \
+        "|| > Referenced from: #{h[:reference]}"
     end
 
     def format_duplicate_symbols(h)
-      "#{h[:message]}  <br />" \
-        "> #{h[:file_paths].map { |path| path.split('/').last }.join('<br /> ')}"
+      "#{h[:message]}\n" \
+        "|| > #{h[:file_paths].map { |path| path.split('/').last }.join("\n||")}"
     end
 
     def format_test_failure(suite_name, failure)
       path = relative_path(failure[:file_path])
       path_link = format_path(path)
-      "**#{suite_name}**: #{failure[:test_case]}, #{escape_reason(failure[:reason])}  <br />  #{path_link}"
+      "**#{suite_name}**: #{failure[:test_case]}, #{escape_reason(failure[:reason])}\n||#{path_link}"
     end
   end
 end
