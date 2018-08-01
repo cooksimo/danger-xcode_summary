@@ -176,7 +176,7 @@ module Danger
       errors = [
         xcode_summary.fetch(:errors, []).map { |message| Result.new(message, nil) },
         xcode_summary.fetch(:compile_errors, {}).map do |h|
-          Result.new(format_compile_warning(h), parse_location(h))
+          Result.new(format_compile_warning(h, true), parse_location(h))
         end,
         xcode_summary.fetch(:file_missing_errors, {}).map do |h|
           Result.new(format_format_file_missing_error(h), parse_location(h))
@@ -242,9 +242,9 @@ module Danger
       reason.gsub('>', '\>').gsub('<', '\<')
     end
 
-    def format_compile_warning(h)
+    def format_compile_warning(h, error = false)
       path = relative_path(h[:file_path])
-      return nil if should_ignore_warning?(path)
+      return nil if !error && should_ignore_warning?(path)
 
       path_link = format_path(path)
 
