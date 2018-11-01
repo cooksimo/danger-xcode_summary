@@ -191,6 +191,11 @@ module Danger
           failures.map do |failure|
             Result.new(format_test_failure(test_suite, failure), parse_test_location(failure))
           end
+        end,
+        xcode_summary.fetch(:tests_summary_messages, []).map do |message|
+          if /with [1-9]\d* failure/i === message && xcode_summary.fetch(:tests_failures, {}).empty?
+            Result.new("Test failures detected, there was probably a crash running the tests. Please check the build log.", nil)
+          end
         end
       ].flatten.uniq.compact.reject { |result| result.message.nil? }
       errors.delete_if(&ignored_results)
